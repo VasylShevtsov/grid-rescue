@@ -100,7 +100,7 @@ public class RescueGame {
     }
 
     public int getTurnsRemaining() {
-        return (turnLimit - turnsUsed);
+        return Math.max(0, turnLimit - turnsUsed);
     }
 
     public MissionStatus getStatus() {
