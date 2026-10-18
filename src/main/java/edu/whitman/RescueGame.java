@@ -84,7 +84,11 @@ public class RescueGame {
     }
 
     public Tile[][] getBoard() {
-        return board;
+        Tile[][] snapshot = new Tile[HEIGHT][];
+        for (int row = 0; row < HEIGHT; row++) {
+            snapshot[row] = board[row].clone();
+        }
+        return snapshot;
     }
 
     public List<Survivor> getSurvivors() {
