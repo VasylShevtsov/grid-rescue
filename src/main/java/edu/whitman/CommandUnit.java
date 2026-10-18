@@ -23,6 +23,6 @@ public class CommandUnit extends RescueUnit {
 
     @Override
     public List<Tile> getLegalMoves() {
-        throw new UnsupportedOperationException("TODO implement legal destinations");
+        return collectLegalMoves(true);
     }
 }

@@ -73,4 +73,45 @@ public abstract class RescueUnit {
         throw new UnsupportedOperationException("TODO implement required behavior");
     }
 
+    protected List<Tile> collectLegalMoves(boolean allowDiagonals) {
+        List<Tile> moves = new ArrayList<>();
+        RescueGame game = team.getGame();
+
+        if (game.getStatus() != MissionStatus.IN_PROGRESS) {
+            return moves;
+        }
+
+        int currentRow = tile.getRow();
+        int currentCol = tile.getCol();
+
+        for (int delta_row = -1; delta_row <=1; delta_row++) {
+            for (int delta_col = -1; delta_col <=1; delta_col++) {
+                if (delta_row == 0 && delta_col == 0) {
+                    continue;
+                }
+                if (!allowDiagonals && delta_col != 0 && delta_row != 0) {
+                    continue;
+                }
+
+                int nextRow = currentRow + delta_row;
+                int nextCol = currentCol + delta_col;
+                if (nextRow < 0 || nextRow >= RescueGame.HEIGHT || nextCol < 0 || nextCol >= RescueGame.WIDTH) {
+                    continue;
+                }
+
+                Tile destination = game.getTile(nextRow, nextCol);
+                if (destination.getUnit() != null) {
+                    continue;
+                }
+                if (!canEnter(destination.getTerrain())) {
+                    continue;
+                }
+                
+                moves.add(game.getTile(nextRow, nextCol));
+            }
+        }
+
+        return moves;
+    }
+
 }
