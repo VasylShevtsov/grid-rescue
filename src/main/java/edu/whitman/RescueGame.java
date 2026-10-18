@@ -16,6 +16,14 @@ public class RescueGame {
     private int turnsUsed;
     private MissionStatus status;
 
+    public RescueGame(RescueTeam team) {
+    if (team == null) {
+        throw new IllegalArgumentException("Team must not be null");
+    }
+
+    throw new UnsupportedOperationException("TODO implement default mission");
+    }
+    
     public RescueGame(RescueTeam team, Terrain[][] terrain, int turnLimit) {
         if (team == null) {
             throw new IllegalArgumentException("Team must not be null");
@@ -59,15 +67,18 @@ public class RescueGame {
     }
 
     public RescueTeam getTeam() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return team;
     }
 
     public Tile getTile(int row, int col) {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        if (row < 0 || row >= HEIGHT || col < 0 || col >= WIDTH) {
+            throw new IllegalArgumentException("Row and column must be within board limits");
+        }
+        return board[row][col];
     }
 
     public Tile[][] getBoard() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return board;
     }
 
     public List<Survivor> getSurvivors() {
