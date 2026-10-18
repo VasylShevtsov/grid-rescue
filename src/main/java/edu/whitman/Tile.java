@@ -2,41 +2,59 @@ package edu.whitman;
 
 import java.util.List;
 
-/**
- * Student implementation scaffold. See docs/UML_Class_Specification.txt.
- * TODO bodies intentionally fail until the required model is implemented.
- */
+
 public class Tile {
+
+    private final RescueGame game;
+    private final int row;
+    private final int col;
+    private final Terrain terrain;
+
+    private RescueUnit unit;
+    private Survivor survivor;
+
     Tile(RescueGame game, int row, int col, Terrain terrain) {
-        throw new UnsupportedOperationException("TODO implement Tile");
+        if (game == null) {
+            throw new IllegalArgumentException("Game must not be null");
+        }
+        if (terrain == null) {
+            throw new IllegalArgumentException("Terrain must not be null");
+        }
+        if (row < 0 || row >= RescueGame.WIDTH || col < 0 || col >= RescueGame.HEIGHT) {
+            throw new IllegalArgumentException("Row and column must be within the board");
+        }
+        this.game = game;
+        this.row = row;
+        this.col = col;
+        this.terrain = terrain;
     }
 
     public RescueGame getGame() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return game;
     }
 
     public int getRow() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return row;
     }
 
     public int getCol() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return col;
     }
 
     public Terrain getTerrain() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return terrain;
     }
 
     public boolean isShelter() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return terrain == Terrain.SHELTER;
     }
 
     public RescueUnit getUnit() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return unit;
     }
 
     public Survivor getSurvivor() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return survivor;
     }
 
 }
