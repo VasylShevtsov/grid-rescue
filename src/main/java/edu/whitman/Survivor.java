@@ -28,7 +28,7 @@ public class Survivor {
             throw new IllegalArgumentException("Tile is blocked terrain");
         }
         if (tile.getSurvivor() != null) {
-            throw new IllegalArgumentException("Tile alread has a survivor");
+            throw new IllegalArgumentException("Tile already has a survivor");
         }
 
         this.id = id.trim();
@@ -59,6 +59,12 @@ public class Survivor {
     void becomeCarriedBy(RescueUnit unit) {
         this.tile = null;
         this.carrier = unit;
+    }
+
+    void becomeRescued() {
+        this.tile = null;
+        this.carrier = null;
+        this.rescued = true;
     }
 
 }

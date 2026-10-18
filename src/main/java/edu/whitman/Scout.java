@@ -17,8 +17,8 @@ public class Scout extends UpgradeableUnit {
         if (terrain == null) {
             throw new IllegalArgumentException("Terrain cannot be null");
             }
-        boolean normallyALlowed = (terrain == Terrain.PLAIN || terrain == Terrain.SHELTER || terrain == Terrain.RUBBLE);
-        return normallyALlowed || (this.isUpgraded() && terrain == Terrain.WATER);
+        boolean normallyAllowed = (terrain == Terrain.PLAIN || terrain == Terrain.SHELTER || terrain == Terrain.RUBBLE);
+        return normallyAllowed || (this.isUpgraded() && terrain == Terrain.WATER);
         }
 
     @Override

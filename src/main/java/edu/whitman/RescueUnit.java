@@ -54,42 +54,42 @@ public abstract class RescueUnit {
     public int getDeliveredCount() {
         return deliveredCount;
     }
-
+    
     public abstract int getCapacity();
-
+    
     public abstract boolean canEnter(Terrain terrain);
-
+    
     public abstract List<Tile> getLegalMoves();
-
+    
     public void move(Tile destination) {
         RescueGame game = team.getGame();
         game.requireInProgress();
-
+        
         boolean legal = false;
-
+        
         for (Tile candidate : getLegalMoves()) {
             if (candidate == destination) {
                 legal = true;
                 break;
             }
         }
-
+        
         if (!legal) {
             throw new IllegalArgumentException("Destination is not a legal move");
         }
-
+        
         Tile source = this.tile;
         source.setUnit(null);
         this.tile = destination;
         destination.setUnit(this);
-
+        
         game.completeAction();
     }
-
+    
     public void pickUp(Survivor survivor) {
         RescueGame game = team.getGame();
         game.requireInProgress();
-
+        
         if (survivor == null) {
             throw new IllegalArgumentException("Survivor can't be null");
         }
@@ -112,16 +112,37 @@ public abstract class RescueUnit {
             throw new IllegalArgumentException("There is not enough capacity in the unit");
         }
 
+        tile.setSurvivor(null);
         this.cargo.add(survivor);
         survivor.becomeCarriedBy(this);
-
+        
         game.completeAction();
     }
-
+    
     public int deliver() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
-    }
+        RescueGame game = team.getGame();
+        game.requireInProgress();
+        
+        if (tile.getTerrain() != Terrain.SHELTER) {
+            throw new IllegalArgumentException("Unit must be in shelter");
+        }
+        if (cargo.isEmpty()) {
+            throw new IllegalArgumentException("Cargo is empty");
+        }
+        
+        int rescuedNow = cargo.size();
+        for (Survivor survivor : cargo) {
+            team.recordRescue(survivor);
+            survivor.becomeRescued();
+        }
 
+        cargo.clear();
+        deliveredCount += rescuedNow;
+        game.completeAction();
+
+        return rescuedNow;
+    }
+    
     protected List<Tile> collectLegalMoves(boolean allowDiagonals) {
         List<Tile> moves = new ArrayList<>();
         RescueGame game = team.getGame();

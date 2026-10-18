@@ -51,4 +51,8 @@ public class RescueTeam {
     void registerUnit(RescueUnit unit) {
         units.add(unit);
     }
+
+    void recordRescue(Survivor survivor) {
+        rescuedSurvivors.add(survivor);
+    }
 }
