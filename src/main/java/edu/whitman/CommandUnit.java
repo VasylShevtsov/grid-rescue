@@ -2,7 +2,6 @@ package edu.whitman;
 
 import java.util.List;
 
-/** Student implementation scaffold. See the rulebook for this unit's behavior. */
 public class CommandUnit extends RescueUnit {
     public CommandUnit(RescueTeam team, Tile tile) {
         super(team, tile);
@@ -10,13 +9,17 @@ public class CommandUnit extends RescueUnit {
 
     @Override
     public int getCapacity() {
-        throw new UnsupportedOperationException("TODO implement capacity");
+        return 0;
     }
 
     @Override
     public boolean canEnter(Terrain terrain) {
-        throw new UnsupportedOperationException("TODO implement terrain rules");
-    }
+        if (terrain == null) {
+            throw new IllegalArgumentException("Terrain cannot be null");
+            }
+        return (terrain == Terrain.PLAIN || terrain == Terrain.SHELTER);
+        }
+    
 
     @Override
     public List<Tile> getLegalMoves() {
