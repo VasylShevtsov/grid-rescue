@@ -20,7 +20,7 @@ public class Tile {
         if (terrain == null) {
             throw new IllegalArgumentException("Terrain must not be null");
         }
-        if (row < 0 || row >= RescueGame.WIDTH || col < 0 || col >= RescueGame.HEIGHT) {
+        if (row < 0 || row >= RescueGame.HEIGHT || col < 0 || col >= RescueGame.WIDTH) {
             throw new IllegalArgumentException("Row and column must be within the board");
         }
         this.game = game;
