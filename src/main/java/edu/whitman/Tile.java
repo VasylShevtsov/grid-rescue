@@ -57,4 +57,8 @@ public class Tile {
         return survivor;
     }
 
+    void setUnit(RescueUnit unit) {
+        this.unit = unit;
+    }
+
 }

@@ -38,7 +38,7 @@ public class RescueTeam {
         return rescuedSurvivors.size();
     }
 
-    public void bindToGame(RescueGame game) {
+    void bindToGame(RescueGame game) {
         if (game == null) {
             throw new IllegalArgumentException("Game must not be null");
         }
@@ -48,4 +48,7 @@ public class RescueTeam {
         this.game = game;
     }
 
+    void registerUnit(RescueUnit unit) {
+        units.add(unit);
+    }
 }

@@ -111,4 +111,11 @@ public class RescueGame {
         return status;
     }
 
+    //units may only bd constructed before the first successful action and while the mission is in progress
+    void requiredSetupOpen() {
+        if (this.turnsUsed != 0 || this.status != MissionStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Setup is not open");
+        }
+    }
+
 }
