@@ -23,19 +23,19 @@ public class RescueTeam {
     }
 
     public RescueGame getGame() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return game;
     }
 
     public List<RescueUnit> getUnits() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return units;
     }
 
     public List<Survivor> getRescuedSurvivors() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return rescuedSurvivors;
     }
 
     public int getRescuedCount() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return rescuedSurvivors.size();
     }
 
 }
