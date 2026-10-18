@@ -118,4 +118,13 @@ public class RescueGame {
         }
     }
 
+    void registerSurvivor(Survivor survivor) {
+        for (Survivor s : survivors) {
+            if (s.getId().equals(survivor.getId())) {
+                throw new IllegalArgumentException("Duplicate survivor id: " + survivor.getId());
+            }
+        }
+        survivors.add(survivor);
+    }
+
 }

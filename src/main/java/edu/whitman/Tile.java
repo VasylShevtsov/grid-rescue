@@ -61,4 +61,8 @@ public class Tile {
         this.unit = unit;
     }
 
+    void setSurvivor(Survivor survivor) {
+        this.survivor = survivor;
+    }
+
 }
