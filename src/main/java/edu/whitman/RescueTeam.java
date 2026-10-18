@@ -38,4 +38,14 @@ public class RescueTeam {
         return rescuedSurvivors.size();
     }
 
+    public void bindToGame(RescueGame game) {
+        if (game == null) {
+            throw new IllegalArgumentException("Game must not be null");
+        }
+        if (this.game != null) {
+            throw new IllegalArgumentException("Game has already been assigned");
+        }
+        this.game = game;
+    }
+
 }
