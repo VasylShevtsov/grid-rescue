@@ -37,13 +37,19 @@ public class RescueGame {
         if (terrain.length != HEIGHT) {
             throw new IllegalArgumentException("Terrain height must equal board height");
         }
+        if (turnLimit <= 0) {
+            throw new IllegalArgumentException("turnLimit must be greater than zero");
+        }
         
         boolean hasShelter = false;
         for (int row = 0; row < HEIGHT; row++) {
-            if (terrain[row].length != WIDTH) {
-                throw new IllegalArgumentException("Terrain width must equal board width");
+            if (terrain[row] == null || terrain[row].length != WIDTH) {
+                throw new IllegalArgumentException("Each terrain row must contain WIDTH number of entries");
             }
             for (int col = 0; col < WIDTH; col++) {
+                if (terrain[row][col] == null) {
+                    throw new IllegalArgumentException("Each terrain entry cannot be null");
+                }
                 if (terrain[row][col] == Terrain.SHELTER) {
                     hasShelter = true;
                 }
