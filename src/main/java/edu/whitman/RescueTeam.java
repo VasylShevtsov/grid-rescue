@@ -1,18 +1,25 @@
 package edu.whitman;
 
 import java.util.List;
+import java.util.ArrayList;
 
-/**
- * Student implementation scaffold. See docs/UML_Class_Specification.txt.
- * TODO bodies intentionally fail until the required model is implemented.
- */
 public class RescueTeam {
+    private final String name;
+    private RescueGame game;
+
+    private final List<RescueUnit> units = new ArrayList<>();
+    private final List<Survivor> rescuedSurvivors = new ArrayList<>();
+
     public RescueTeam(String name) {
-        throw new UnsupportedOperationException("TODO implement RescueTeam");
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Team name must not be null or blank");
+        }
+
+        this.name = name.trim();
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return name;
     }
 
     public RescueGame getGame() {
