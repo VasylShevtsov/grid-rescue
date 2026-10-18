@@ -2,7 +2,6 @@ package edu.whitman;
 
 import java.util.List;
 
-/** Student implementation scaffold. See the rulebook for this unit's behavior. */
 public class Medic extends UpgradeableUnit {
     public Medic(RescueTeam team, Tile tile) {
         super(team, tile);
@@ -10,12 +9,20 @@ public class Medic extends UpgradeableUnit {
 
     @Override
     public int getCapacity() {
-        throw new UnsupportedOperationException("TODO implement capacity");
+        if (this.isUpgraded()) {
+            return 2;
+        }
+        else {
+            return 1;
+        }
     }
 
     @Override
     public boolean canEnter(Terrain terrain) {
-        throw new UnsupportedOperationException("TODO implement terrain rules");
+        if (terrain == null) {
+            throw new IllegalArgumentException("Terrain cannot be null");
+            }
+        return (terrain == Terrain.PLAIN || terrain == Terrain.SHELTER);
     }
 
     @Override
