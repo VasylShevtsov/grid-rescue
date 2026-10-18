@@ -10,13 +10,16 @@ public class RescueTruck extends RescueUnit {
 
     @Override
     public int getCapacity() {
-        throw new UnsupportedOperationException("TODO implement capacity");
+        return 2;
     }
 
     @Override
     public boolean canEnter(Terrain terrain) {
-        throw new UnsupportedOperationException("TODO implement terrain rules");
-    }
+        if (terrain == null) {
+            throw new IllegalArgumentException("Terrain cannot be null");
+            }
+        return (terrain == Terrain.PLAIN || terrain == Terrain.SHELTER);
+        }
 
     @Override
     public List<Tile> getLegalMoves() {
