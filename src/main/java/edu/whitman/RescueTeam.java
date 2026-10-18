@@ -27,11 +27,11 @@ public class RescueTeam {
     }
 
     public List<RescueUnit> getUnits() {
-        return units;
+        return new ArrayList<>(units);
     }
 
     public List<Survivor> getRescuedSurvivors() {
-        return rescuedSurvivors;
+        return new ArrayList<>(rescuedSurvivors);
     }
 
     public int getRescuedCount() {
