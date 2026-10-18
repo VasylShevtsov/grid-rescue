@@ -1,0 +1,163 @@
+GRID RESCUE — MILESTONE 3 DEMO AND MANUAL VERIFICATION
+
+PURPOSE
+Demonstrate the real controls, useful invalid-action feedback, cargo, upgrades,
+mission outcome, and restart. This is a manual walkthrough, not an autoplay
+feature. Each numbered route step is one successful action. Selection, Help,
+and rejected operations do not spend actions.
+
+PREPARATION
+From the repository root, run:
+  mvn clean verify
+  java -jar target/grid-rescue-1.0-SNAPSHOT.jar
+
+Fallback after mvn test:
+  java -cp target/classes edu.whitman.ui.GridRescueApplication
+
+Use a graphical desktop and a window large enough to show the board and unit
+details. Rehearse the route before the presentation. The slide outline allocates
+two minutes to the demo, so use the screenshots as backup if needed.
+
+VERIFICATION EVIDENCE
+- docs/Milestone_3_Verification.txt records the final clean-build results and
+  test totals, accepted grading result, runtime check, and captured states.
+- The 40-action route below is also exercised through the real Swing buttons.
+- Automated checks cover rejected actions, cargo, upgrades, terminal behavior,
+  help, restart confirmation/cancellation, keyboard bindings, and layout.
+- Reproduce the actual Swing view captures with:
+    sh tools/capture-screenshots.sh
+
+CHECK THE START
+- Start a fresh mission; confirm restarting if an active mission has progress.
+- Check 80 actions remaining, 0 used of 80 total actions, and 0 of 4 survivors
+  home. The normal mission objective should be visible.
+- Confirm Scout (5,0), Medic (5,1), RescueTruck (5,3), CommandUnit (5,4).
+- Confirm survivors A (0,0), B (0,4), C (2,4), D (3,0); shelter (5,2).
+- Check the square terrain tiles, distinct unit art, survivor markers, and
+  selected-unit outline. Read the labels and legend as well as the colors.
+- Open How to play and check the objective, controls, movement, terrain, cargo, upgrades,
+  and win/loss explanation. Return to the mission; check that no action was
+  spent. Press H to reopen Help and Escape to return.
+
+CHECK SELECTION AND REJECTION
+- Select Scout in the roster. Check capacity 1, empty cargo, 0 delivered, and
+  its initial upgrade state. Legal destinations should be (4,0) and (4,1).
+- Click Medic at (5,1). This selects Medic and spends no action. Press 1 to
+  select Scout again; use 2–4 to inspect the other units, then return to Scout.
+- Click (0,0), a distant destination. Expect an invalid-move message and
+  unchanged position, cargo, rescue count, status, and 0 actions used.
+- Check that Pick up survivor and Deliver cargo are unavailable at the starting
+  position and that the selected-unit panel explains what to do next.
+- Move focus to a map tile with Tab, then use arrow keys. Focus should move
+  without moving the unit or spending actions. Activate a legal focused tile
+  with Enter or Space, then start a fresh mission before the route below.
+
+WINNING ROUTE
+Coordinates are (row,column), with (0,0) at the upper-left corner. Click roster
+buttons, occupied map tiles, or number keys to change units; click an empty
+legal destination tile to move. Use Pick up survivor and Deliver cargo only at
+the specified points. Clicking another unit selects it and does not request a move.
+
+Scout: rescue D and earn the water upgrade.
+  01  Move to (4,0)
+  02  Move to (3,0)
+      Check: D is still waiting; arrival did not automatically collect D.
+      Pick up survivor becomes available; the next-step guidance points to it.
+  03  Pick up D
+      Check: cargo contains D; D no longer appears as a waiting survivor.
+      The mission tracker distinguishes carried survivors from rescued ones.
+  04  Move to (4,1)
+  05  Move to (5,2)
+  06  Deliver D
+      Check: 1 rescued, cargo empty, 1 personal delivery, Scout upgraded,
+      6 actions used and 74 remaining. Scout can now enter water but still
+      cannot enter blocked terrain. Medic has not upgraded.
+
+Scout: rescue A, then clear the shelter.
+  07  Move to (4,1)
+  08  Move to (3,0)
+  09  Move to (2,0)
+  10  Move to (1,0)
+  11  Move to (0,0)
+  12  Pick up A
+  13  Move to (1,0)
+  14  Move to (2,0)
+  15  Move to (3,0)
+  16  Move to (4,1)
+  17  Move to (5,2)
+  18  Deliver A
+      Check: 2 rescued; Scout has 2 deliveries and retains its upgrade.
+  19  Move to (4,2)
+
+Select RescueTruck: collect C and B into its two-person cargo.
+  20  Move to (4,3)
+  21  Move to (3,3)
+  22  Move to (2,3)
+  23  Move to (2,4)
+  24  Pick up C
+  25  Move to (2,3)
+  26  Move to (1,3)
+  27  Move to (0,3)
+  28  Move to (0,4)
+  29  Pick up B
+      Check: cargo contains C and B, capacity 2, and still only 2 rescued.
+  30  Move to (0,3)
+  31  Move to (1,3)
+  32  Move to (2,3)
+  33  Move to (3,3)
+  34  Move to (4,3)
+  35  Move to (5,3)
+  36  Move to (5,2)
+  37  Deliver C and B
+      Check: both are rescued in this one action, Truck cargo is empty,
+      4 of 4 rescued, 37 used / 43 remaining, mission still in progress because
+      CommandUnit has not reached shelter.
+  38  Move to (5,3)
+
+Select CommandUnit: complete the objective.
+  39  Move to (4,3)
+  40  Move to (5,2)
+      Check: "Everyone made it home" and "Mission won", with 4 of 4 rescued,
+      40 used / 40 remaining.
+      The shelter is occupied by CommandUnit; no legal destinations remain.
+
+CHECK TERMINAL BEHAVIOR AND RESTART
+- Check the distinct success summary: four survivors rescued and 40 actions
+  remaining. Gameplay controls must not change the completed mission.
+- Choose Play again in the outcome summary. Check a fresh default board, all four waiting survivors,
+  no cargo, no upgrades, 0 rescued, 80 remaining, and the normal mission objective.
+- Make one legal move to show that the fresh mission is playable.
+- Request a restart. Cancel it and check the same position, selection, cargo,
+  and action count. Request a restart again and confirm it; check a clean reset.
+- Open Help during play, return to the mission, and check that progress survives.
+
+OPTIONAL LOSS CHECK (OUTSIDE THE TWO-MINUTE PRESENTATION)
+- Start another fresh mission and select Scout.
+- Alternate moves from (5,0) to (4,0) and back, 40 round trips / 80 actions.
+  Both tiles are plain and unoccupied; no survivor is collected on this route.
+- After action 80, check the "Mission lost" summary, 0 remaining, no legal moves, and no further
+  gameplay changes. Start a fresh mission and confirm the reset again.
+- Accepted model tests separately verify victory on the final permitted action
+  and terminal exception precedence; no custom-map editor is exposed in the UI.
+
+SCREENSHOT EVIDENCE
+- docs/screenshots/mission-start.png: fresh default mission; Scout selected.
+- docs/screenshots/action-rejected.png: invalid destination; 0 actions spent.
+- docs/screenshots/scout-upgraded.png: first delivery at action 6; 74 remaining.
+- docs/screenshots/mission-won.png: four rescued; Command at shelter; action 40.
+- docs/screenshots/mission-low-budget.png: 79 moves; 1 action remains, none rescued.
+- docs/screenshots/mission-lost.png: the default mission lost after 80 moves,
+  matching the optional loss route above.
+- docs/screenshots/survivor-reached.png: D is waiting on Scout's tile; pickup ready.
+- docs/screenshots/survivor-aboard.png: D in Scout's cargo; 77 actions remaining.
+- docs/screenshots/restart-confirmation.png: confirmation after three actions;
+  Keep playing preserves the mission.
+- docs/screenshots/how-to-play.png and how-to-play-compact.png: rules and controls.
+- docs/screenshots/how-to-play-rules.png: compact Help scrolled to the final rules.
+- docs/screenshots/mission-compact.png and mission-large.png: layout size checks.
+- target/surefire-reports/: results from the latest local automated test run.
+
+Use the manual steps above for a live presentation rehearsal. Resize the
+window to the presentation display: map tiles should remain square, controls
+should stay reachable, and scrolling should expose any content that does not
+fit. Inspect the visible keyboard focus and all Help/outcome screens too.

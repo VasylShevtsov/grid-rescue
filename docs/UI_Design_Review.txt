@@ -1,0 +1,53 @@
+GRID RESCUE — UI DESIGN REVIEW
+October 18, 2026
+
+DESIGN GOAL
+Make a small rescue puzzle feel like a game, while making it easier to choose a
+unit, read the board, understand the next action, and recover from mistakes.
+Keep the accepted model and its rules as the source of truth.
+
+BEFORE
+The original real-view capture was inspected before the redesign. Its map used
+wide rectangular cells filled with text, and almost every label was bold.
+Terrain colors alone supplied most of the visual variety. Unit names and long
+status text competed with the terrain and survivors. Pickup and delivery were
+always enabled, so players had to discover their requirements through errors.
+The board, roster, and details lacked a strong visual order. Starting over
+immediately discarded progress, and a completed mission received only a small
+status change. Passing model tests had not established a pleasant interface.
+
+IMPLEMENTED CHANGES
+- Give the map visual priority. Square tiles, recognizable terrain and unit art,
+  survivor badges, and distinct legal-move indicators help a player scan it.
+- Separate the three decisions: choose a squad member, choose a map destination,
+  then inspect the selected unit and perform the available action.
+- Use a restrained ivory and forest-green palette, consistent spacing, a
+  bundled typeface, and short labels. Reserve visual emphasis for selection,
+  available actions, the action budget, feedback, and mission outcomes.
+- Make pickup and delivery available only when the selected unit can perform
+  them; explain the next useful step. A waiting survivor is still collected
+  explicitly, and delivery still requires the shelter.
+- Let players select units through the squad, their map cells, or number keys.
+  Keyboard map focus moves independently from the unit; activation is explicit.
+- Keep the remaining action budget and rescue progress visible. Carried and
+  rescued survivors are different states, and all rescues still require Command
+  at the shelter before the mission can finish.
+- Provide a readable Help screen in the game window, without losing progress.
+- Confirm restarting a mission with progress, allow cancellation, and provide a clear
+  way to play again after separate success and failure summaries.
+- Preserve text labels, accessible control names, and visible keyboard focus.
+  Color and artwork complement those cues; they do not replace the rules.
+- Keep square tile proportions when the window changes size. Allow scrolling
+  when the display is too small for the readable minimum layout. The Help
+  content scrolls independently while its return button and keyboard guide
+  remain visible.
+
+EVIDENCE
+The screenshots under docs/screenshots/ are produced from the actual Swing view
+and actual button events, not design mockups. Milestone_3_Verification.txt records
+the final build, automated behavior checks, visual captures, and runtime checks.
+The 14-image capture set was visually reviewed at 1160 × 820, 980 × 760, and
+1440 × 980. Checks included the full victory summary, updated unit names,
+restart progress, readable compact controls, and scrollable Help content.
+Milestone_3_Demo.txt gives a manual path through selection, rejection, pickup,
+delivery, upgrades, a full victory, restart, help, and an optional default loss.

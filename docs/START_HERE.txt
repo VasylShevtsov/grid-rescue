@@ -1,37 +1,73 @@
-GRID RESCUE ASSIGNMENT KIT
+GRID RESCUE — START HERE
 
-This kit supplies the assignment and test scaffold for you to implement Grid
-Rescue. It does not include a finished model or interface.
+Grid Rescue now includes the Java model and a playable Swing desktop interface.
+The repository root is the directory containing README.md, pom.xml, and src/.
+
+BUILD AND PLAY
+With Java 11 or newer and Maven available, run from the repository root:
+  mvn clean verify
+  java -jar target/grid-rescue-1.0-SNAPSHOT.jar
+
+Alternative launch after compiling and testing:
+  mvn test
+  java -cp target/classes edu.whitman.ui.GridRescueApplication
+
+The game window requires a graphical desktop. Swing is included with Java; no
+external runtime libraries are required. The first Maven build may download
+build plugins and test dependencies.
+
+Select a unit in the squad, on the map, or with keys 1–4; click a legal tile
+to move. Arrow keys move map focus; Enter or Space activates the tile. Use
+Pick up survivor while standing on a survivor; use Deliver cargo while carrying
+survivors at the shelter. The P and D shortcuts perform those same actions.
+Rescue A, B, C, and D and bring the CommandUnit to a shelter within 80 actions.
+How to play explains movement, terrain, capacities, upgrades, and the outcome
+rules. It opens in the same window; H opens it and Escape returns to play. Restarting
+a mission with progress asks for confirmation. The outcome summary offers Play again.
 
 READING ORDER
-1. Game_Rules.docx: complete rules, fixed map, starting positions,
-   legal actions, upgrades, failure handling and a verified 40-action winning route.
-2. Project_Milestone_2.pdf or .txt: implement the Java model and pass the 53 tests.
-3. UML_Class_Specification.txt: draw the UML from the complete class boxes,
-   signatures, relationships, visibility and multiplicities.
-4. Test_Plan.txt: 53 individual test descriptions, requirement coverage and the
-   distinction between automated model checks and final interface assessment.
-5. Project_Milestone_3.docx: add the interface, architecture, README,
-   presentation and interview, with original grading weights retained.
-6. Instructor_Notes.txt: pending due dates, repository/PR policy and solo CATME
-   application; the proposal does not invent or redistribute these criteria.
+1. README.md: launch instructions, 32 functional requirements, five measurable
+   nonfunctional requirements, architecture, component diagram, and screenshots.
+2. docs/Game_Rules.docx: complete game contract and default 40-action route.
+3. docs/Milestone_3_Demo.txt: manual verification and presentation rehearsal.
+4. docs/Milestone_3_Verification.txt: recorded build, launch, and UI evidence.
+5. docs/Project_Milestone_3.docx: milestone description and assessment categories.
+6. docs/Grid Rescue UML Diagram.pdf and docs/UML_Class_Specification.txt:
+   model inheritance, relationships, public API, and lifecycle.
+7. docs/Test_Plan.txt and docs/Project_Milestone_2.docx: original accepted model
+   test plan and previous milestone requirements.
 
-START IMPLEMENTING
-Open starter-project in your Java IDE. Its pom.xml, src/ and .github/ contents
-form the repository root. With Java 11 and Maven available, run mvn test from that
-directory. All 53 tests are discovered but initially fail because model methods
-are TODO scaffolds. Implement behaviors incrementally. See README.md for build
-and grading instructions. The tools/grade.py file is part of the CI mechanism.
-The same documents are included under starter-project/docs/ for portability.
+IMPLEMENTATION
+  src/main/java/edu/whitman/      Game model; no UI or input/output dependency.
+  src/main/java/edu/whitman/app/  Selection, action delegation, feedback, restart.
+  src/main/java/edu/whitman/ui/   Swing application, board, and controls.
+  src/test/java/edu/whitman/      Accepted suites and supplementary tests.
 
-CONTENTS
-Three editable Word documents (.docx).
-Plain-text UML specification, test plan and instructor review notes.
-Java 11 Maven starter with ten class stubs, two enums, eight JUnit suites,
-shared test fixtures and GitHub Actions grading workflow.
-Verification_Report.txt and FILE_MANIFEST.sha256 document the package checks.
+VERIFICATION
+Clean Maven verification on Temurin Java 11.0.32.1 passes 92 tests, with no
+failures, errors, or skips: 53 accepted model tests, 3 model-contract tests,
+16 controller tests, and 20 Swing view and player-journey tests. See
+Milestone_3_Verification.txt for the final build, test counts, grading result,
+runtime check, and screenshot evidence. Maven writes current reports under
+target/surefire-reports/. The accepted grading script and CI workflow are retained.
 
-ASSESSMENT
-The assignment preserves the original rubric weights. Your professor must still
-set the dates and specify the solo application of teammate/CATME review. No
-institutional repository, review outcome, grade or deadline is presumed.
+Capture the documented states from the real Swing view with:
+  sh tools/capture-screenshots.sh
+The loss image follows 80 moves in the default mission; the low-budget image
+shows 1 action remaining. UI_Design_Review.txt records the redesign decisions.
+
+BRANCH
+The current and previous Milestone 3 work is on Project-Milestone-3, created
+from main. No Milestone 3 commits were added to Project-Milestone-2.
+
+DOCUMENT STATUS
+The original assignment and test-plan documents describe the supplied starter
+and assessment contract; references there to unimplemented scaffolding are
+historical. README.md describes the current implementation.
+
+Before hand-in, create the slides, add the Google
+presentation URL in README.md, and place the final version on main in the
+instructor-designated repository.
+
+AI assisted with the interface, controller, supplementary tests, and milestone
+documentation. README.md records the assistance and validation approach.

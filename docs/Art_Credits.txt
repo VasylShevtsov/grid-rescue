@@ -1,0 +1,48 @@
+GRID RESCUE — ART CREDITS
+
+Map sprites: Kenney, Tiny Town 1.1 and Tiny Battle 1.0.
+Sources: https://kenney.nl/assets/tiny-town
+         https://kenney.nl/assets/tiny-battle
+License: Creative Commons Zero (CC0), public domain.
+Retrieved October 18, 2026 from Kenney's official downloads.
+
+Bundled sprites (original PNG files, unchanged):
+  grass.png     Tiny Town tile_0001.png
+  flowers.png   Tiny Town tile_0002.png
+  tree.png      Tiny Town tile_0004.png
+  bush.png      Tiny Town tile_0005.png
+  rubble.png    Tiny Battle tile_0011.png
+  blocked.png   Tiny Battle tile_0025.png
+  shelter.png   Tiny Battle tile_0028.png
+  water.png     Tiny Battle tile_0037.png
+
+Interface and unit symbols: Lucide Icons and Contributors.
+Source: https://github.com/lucide-icons/lucide/tree/main/icons
+License: ISC; some icons derived from Feather carry its MIT license.
+Official SVG files are preserved next to local 96x96 PNG renderings.
+The source shape paths are unchanged. PNG strokes are forest green;
+GameArt recolors these using the source alpha channel for each context.
+Unit symbols use binoculars, cross, truck and radio.
+
+Licenses are bundled with the artwork under:
+  src/main/resources/edu/whitman/ui/art/LICENSE-tiny-town.txt
+  src/main/resources/edu/whitman/ui/art/LICENSE-tiny-battle.txt
+  src/main/resources/edu/whitman/ui/art/LICENSE-lucide.txt
+
+All artwork ships inside the application JAR. No online downloads,
+tracking, image services, or runtime graphics dependencies are required.
+
+Typography: Outfit, The Outfit Project Authors (2021).
+Source: https://github.com/google/fonts/tree/main/ofl/outfit
+Upstream project: https://github.com/Outfitio/Outfit-Fonts
+License: SIL Open Font License 1.1; bundled at
+  src/main/resources/edu/whitman/ui/fonts/OFL.txt
+
+Outfit-Regular.ttf and Outfit-SemiBold.ttf are fixed-weight instances
+(weight 400 and 600) of the original Outfit variable font. They were
+instantiated with fontTools 4.67.0 so Java renders their intended weights
+consistently. Only these static instances and the license are shipped;
+the unused variable font is omitted. The original can be reproduced from
+the official Google Fonts source URL and the checksum below.
+Original variable font SHA-256:
+  fc7287273e66929776e2ba54f144fe699080bec29f61bf649d70d871468aeade

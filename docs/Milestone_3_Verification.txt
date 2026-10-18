@@ -1,0 +1,114 @@
+GRID RESCUE MILESTONE 3 VERIFICATION
+Verified October 18, 2026
+
+IMPLEMENTED SCOPE
+Playable Swing desktop interface and model-backed action controller. The UI
+redesign adds illustrated square tiles, a squad column, selected-unit inspection,
+contextual next-step guidance, available-only pickup/delivery controls, a visible
+action budget, survivor status, keyboard play, in-window Help, protected restart,
+and distinct win/loss summaries with Play again.
+
+README includes 32 functional and five nonfunctional requirements, a component
+diagram, launch instructions, and screenshots. A complete
+demo walkthrough is provided. The Google Slides URL remains a placeholder as
+requested. Interview and CATME work are excluded. Art_Credits.txt records the
+bundled Kenney sprites, Lucide icons, Outfit font, source links, and licenses.
+
+BUILD AND TEST EVIDENCE
+- Temurin JDK 11.0.32.1 on macOS arm64; Java release target 11.
+- mvn clean verify: 92 tests, zero failures, zero errors, zero skipped.
+- Accepted suites: 53 tests, unchanged.
+- ModelContractTest: 3 supplementary tests.
+- GameControllerTest: 16 supplementary tests.
+- MissionViewTest: 6 supplementary tests on Swing's event-dispatch thread.
+- MissionExperienceTest: 14 supplementary player-journey and layout tests.
+- tools/grade.py --build-outcome success: 53/53; model grade 3.00/3.00.
+- Supplementary suites do not change the accepted grading denominator.
+- Latest machine-readable results: target/surefire-reports/TEST-*.xml.
+- Executable JAR entry point: edu.whitman.ui.GridRescueApplication.
+
+BEHAVIOR CHECKS
+- The published route wins in exactly 40 actions through the model, controller,
+  and real Swing button events. The default mission retains 40 actions.
+- The route also wins on the last action of a 40-action budget; it loses with a
+  39-action budget. Terminal model actions remain locked.
+- Invalid moves preserve state and spend no action. Subsequent valid actions
+  succeed and replace the rejection feedback.
+- Squad buttons, occupied map tiles, and 1–4 shortcuts select a unit for free.
+- Pickup/delivery readiness and next-step text follow survivor arrival, cargo,
+  shelter arrival, batch delivery, and upgrades. P/D respect disabled controls.
+- Scout water access and Medic's second seat are exercised separately.
+- Arrow bindings navigate map focus without acting; activation is explicit.
+  Enter activates focused controls. Focus remains reachable after number-key
+  selection. Headless binding tests invoke the real InputMap/ActionMap actions.
+- Help opens and closes without losing progress. Gameplay shortcuts are blocked
+  while Help or restart confirmation is open; Escape returns to the mission.
+- Keep playing and Escape preserve the exact active game and cargo. Confirming
+  restart creates fresh model objects and resets the board, actions, and upgrades.
+- Win/loss summaries permit inspection but no gameplay actions. Play again
+  creates a fresh playable default mission.
+- Dynamic result, selection, and restart text remains visible after updates.
+- Compact controls fit their layout; Help rules fit inside scrollable content;
+  map tiles remain square at compact, default, and enlarged sizes.
+- The original model, accepted tests, TestSupport, grading script, and CI
+  workflow remain unchanged by this milestone.
+
+NATIVE DESKTOP CHECK
+The real macOS window was opened with the Java 11 runtime through a temporary
+application wrapper. That wrapper was used for desktop inspection; the documented
+project deliverable remains the executable JAR.
+
+Native control interactions selected Scout, moved (5,0) → (4,0) → (3,0), and
+picked up D. The window then showed 3 actions used and D aboard Scout. How to
+play opened and scrolled to the bottom; Finish together and Start fresh were
+visible. Returning to the mission preserved cargo and progress. New mission
+showed the 3-action confirmation; Keep playing preserved the same mission.
+The Scout then moved to (4,1), reached shelter at (5,2), and delivered D. The
+window showed 1 rescued, 74 actions remaining, and active water access.
+
+The desktop tool's keyboard events produced no observable input, so native
+keyboard operation was not independently verified. Automated Swing binding
+tests cover number-key selection, P/D readiness, H/Escape, arrow bindings,
+Enter activation, and focusability; the native check above covers rendered
+layout, control interactions, scrolling, progress preservation, and delivery.
+
+VISUAL EVIDENCE
+Fourteen PNGs render the actual Swing MissionView after real control events.
+The complete capture set was visually inspected after the final layout fixes.
+Default captures are 1160 × 820, compact captures are 980 × 760, and the large
+capture is 1440 × 980.
+
+  screenshots/mission-start.png         Default mission: 80 left, 0 rescued.
+  screenshots/action-rejected.png       Distant move rejected; no action spent.
+  screenshots/survivor-reached.png      Scout reaches D; pickup becomes available.
+  screenshots/survivor-aboard.png       D aboard Scout; 77 actions remain.
+  screenshots/restart-confirmation.png  Restart prompt: 3 actions, 0 rescued.
+  screenshots/scout-upgraded.png       First delivery: 6 used, 74 left, 1 rescued.
+  screenshots/mission-won.png          All four rescued; Command at shelter;
+                                      40 used and 40 remaining.
+  screenshots/how-to-play.png          In-window instructions and keyboard guide.
+  screenshots/how-to-play-compact.png  Compact Help with scrolling.
+  screenshots/how-to-play-rules.png    Compact Help scrolled to the final rules.
+  screenshots/mission-compact.png      Compact mission layout.
+  screenshots/mission-large.png        Large view with square map tiles.
+  screenshots/mission-low-budget.png   Default mission: 79 used, 1 remaining.
+  screenshots/mission-lost.png         Default mission: 80 used, 0 of 4 rescued.
+
+The loss capture follows 40 Scout round trips between (5,0) and (4,0), using the
+actual default 80-action mission.
+Recreate the capture set from the repository root:
+  sh tools/capture-screenshots.sh
+
+The capture helper lives in test sources and is not included as a gameplay
+feature or autoplay mode. Milestone_3_Demo.txt gives the manual presentation
+route and recovery checks; UI_Design_Review.txt explains the design decisions.
+
+DELIVERY STATE
+All current and previous Milestone 3 work is on Project-Milestone-3, created
+from main at b3bd95d. No Milestone 3 commits were added to Project-Milestone-2.
+No push, merge, hosted CI run, or course submission is part of this verification.
+The final assessed version can be placed on main for submission after review,
+and the Slides URL added after the user creates the presentation.
+
+docs/Verification_Report.txt remains the historical report for the original
+assignment kit; this file records the implemented and redesigned milestone.
