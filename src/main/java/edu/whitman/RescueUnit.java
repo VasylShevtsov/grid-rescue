@@ -20,10 +20,10 @@ public abstract class RescueUnit {
             throw new IllegalArgumentException("tile can't be null");
         }
         if (team.getGame() != tile.getGame()) {
-            throw new IllegalStateException("Tile and team must belong to the same game");
+            throw new IllegalArgumentException("Tile and team must belong to the same game");
         }
         if (team.getGame().getTile(tile.getRow(), tile.getCol()) != tile) {
-            throw new IllegalStateException("Tile must be exact object stored in the board");
+            throw new IllegalArgumentException("Tile must be exact object stored in the board");
         }
         if (tile.getUnit() != null) {
             throw new IllegalArgumentException("Tile unit has already been assigned");
