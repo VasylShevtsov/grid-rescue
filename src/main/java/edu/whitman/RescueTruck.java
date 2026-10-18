@@ -2,7 +2,6 @@ package edu.whitman;
 
 import java.util.List;
 
-/** Student implementation scaffold. See the rulebook for this unit's behavior. */
 public class RescueTruck extends RescueUnit {
     public RescueTruck(RescueTeam team, Tile tile) {
         super(team, tile);
