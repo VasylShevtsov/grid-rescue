@@ -278,7 +278,7 @@ behavior, restart, and an optional loss check on the default mission.
 
 ## Link to the Google presentation
 
-Google Slides URL: **[add your presentation link here]**
+Google Slides URL: **https://docs.google.com/presentation/d/1ek-hJFFFrsD2LNUn3aIAJpVxrTUylpB-lU-ENLQ_XI8/edit?usp=sharing**
 
 
 ## AI assistance
