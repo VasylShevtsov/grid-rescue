@@ -11,7 +11,7 @@ public class RescueGame {
     private final RescueTeam team;
     private final Tile[][] board;
     private final int turnLimit;
-    
+
     private final List<Survivor> survivors = new ArrayList<>();
     private int turnsUsed;
     private MissionStatus status = MissionStatus.IN_PROGRESS;
@@ -24,20 +24,20 @@ public class RescueGame {
         new RescueTruck(team, this.getTile(5, 3));
         new CommandUnit(team, this.getTile(5, 4));
 
-        new Survivor("A", this.getTile(0,0));
-        new Survivor("B", this.getTile(0,4));
-        new Survivor("C", this.getTile(2,4));
-        new Survivor("D", this.getTile(3,0));
+        new Survivor("A", this.getTile(0, 0));
+        new Survivor("B", this.getTile(0, 4));
+        new Survivor("C", this.getTile(2, 4));
+        new Survivor("D", this.getTile(3, 0));
 
     }
-    
+
     public RescueGame(RescueTeam team, Terrain[][] terrain, int turnLimit) {
         if (team == null) {
             throw new IllegalArgumentException("Team must not be null");
         }
         if (team.getGame() != null) {
             throw new IllegalArgumentException("A game has already been assigned to this team");
-        } 
+        }
         if (terrain == null) {
             throw new IllegalArgumentException("Terrain must not be null");
         }
@@ -47,7 +47,7 @@ public class RescueGame {
         if (turnLimit <= 0) {
             throw new IllegalArgumentException("turnLimit must be greater than zero");
         }
-        
+
         boolean hasShelter = false;
         for (int row = 0; row < HEIGHT; row++) {
             if (terrain[row] == null || terrain[row].length != WIDTH) {
@@ -69,8 +69,8 @@ public class RescueGame {
         this.team = team;
         this.turnLimit = turnLimit;
         this.board = new Tile[HEIGHT][WIDTH];
-        
-        for (int row = 0; row < HEIGHT; row ++) {
+
+        for (int row = 0; row < HEIGHT; row++) {
             for (int col = 0; col < WIDTH; col++) {
                 this.board[row][col] = new Tile(this, row, col, terrain[row][col]);
             }
@@ -118,7 +118,28 @@ public class RescueGame {
         return status;
     }
 
-    //units may only be constructed before the first successful action and while the mission is in progress
+    private boolean missionObjectivesMet() {
+        if (survivors.isEmpty()) {
+            return false;
+        }
+
+        for (Survivor s : survivors) {
+            if (!s.isRescued()) {
+                return false;
+            }
+        }
+
+        for (RescueUnit unit : team.getUnits()) {
+            if (unit instanceof CommandUnit && unit.getTile().isShelter()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // units may only be constructed before the first successful action and while
+    // the mission is in progress
     void requiredSetupOpen() {
         if (this.turnsUsed != 0 || this.status != MissionStatus.IN_PROGRESS) {
             throw new IllegalStateException("Setup is not open");
@@ -134,6 +155,22 @@ public class RescueGame {
         survivors.add(survivor);
     }
 
+    void requireInProgress() {
+        if (status != MissionStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Game status must be \"in progress\"");
+        }
+    }
+
+    void completeAction() {
+        this.turnsUsed++;
+
+        if (missionObjectivesMet()) {
+            this.status = MissionStatus.WON;
+        } else if (turnsUsed >= turnLimit) {
+            this.status = MissionStatus.LOST;
+        }
+    }
+
     private static Terrain[][] createDefaultTerrain() {
         Terrain P = Terrain.PLAIN;
         Terrain W = Terrain.WATER;
@@ -142,12 +179,12 @@ public class RescueGame {
         Terrain H = Terrain.SHELTER;
 
         return new Terrain[][] {
-            {P, P, P, P, P},
-            {P, W, W, P, R},
-            {R, W, B, P, P},
-            {P, P, B, P, P},
-            {P, P, P, P, P},
-            {P, P, H, P, P}
+                { P, P, P, P, P },
+                { P, W, W, P, R },
+                { R, W, B, P, P },
+                { P, P, B, P, P },
+                { P, P, P, P, P },
+                { P, P, H, P, P }
         };
     }
 

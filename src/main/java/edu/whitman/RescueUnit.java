@@ -62,7 +62,28 @@ public abstract class RescueUnit {
     public abstract List<Tile> getLegalMoves();
 
     public void move(Tile destination) {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        RescueGame game = team.getGame();
+        game.requireInProgress();
+
+        boolean legal = false;
+
+        for (Tile candidate : getLegalMoves()) {
+            if (candidate == destination) {
+                legal = true;
+                break;
+            }
+        }
+
+        if (!legal) {
+            throw new IllegalArgumentException("Destination is not a legal move");
+        }
+
+        Tile source = this.tile;
+        source.setUnit(null);
+        this.tile = destination;
+        destination.setUnit(this);
+
+        game.completeAction();
     }
 
     public void pickUp(Survivor survivor) {
