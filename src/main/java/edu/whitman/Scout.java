@@ -10,13 +10,17 @@ public class Scout extends UpgradeableUnit {
 
     @Override
     public int getCapacity() {
-        throw new UnsupportedOperationException("TODO implement capacity");
+        return 1;
     }
 
     @Override
     public boolean canEnter(Terrain terrain) {
-        throw new UnsupportedOperationException("TODO implement terrain rules");
-    }
+        if (terrain == null) {
+            throw new IllegalArgumentException("Terrain cannot be null");
+            }
+        boolean normallyALlowed = (terrain == Terrain.PLAIN || terrain == Terrain.SHELTER || terrain == Terrain.RUBBLE);
+        return normallyALlowed || (this.isUpgraded() && terrain == Terrain.WATER);
+        }
 
     @Override
     public List<Tile> getLegalMoves() {
