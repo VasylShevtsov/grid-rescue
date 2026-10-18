@@ -43,7 +43,7 @@ public class RescueTeam {
             throw new IllegalArgumentException("Game must not be null");
         }
         if (this.game != null) {
-            throw new IllegalArgumentException("Game has already been assigned");
+            throw new IllegalArgumentException("A game has already been assigned to this team");
         }
         this.game = game;
     }
