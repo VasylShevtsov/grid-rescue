@@ -14,7 +14,7 @@ public class RescueGame {
     
     private final List<Survivor> survivors = new ArrayList<>();
     private int turnsUsed;
-    private MissionStatus status;
+    private MissionStatus status = MissionStatus.IN_PROGRESS;
 
     public RescueGame(RescueTeam team) {
     if (team == null) {
@@ -88,23 +88,23 @@ public class RescueGame {
     }
 
     public List<Survivor> getSurvivors() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return new ArrayList<>(survivors);
     }
 
     public int getTurnLimit() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return turnLimit;
     }
 
     public int getTurnsUsed() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return turnsUsed;
     }
 
     public int getTurnsRemaining() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return (turnLimit - turnsUsed);
     }
 
     public MissionStatus getStatus() {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        return status;
     }
 
 }
