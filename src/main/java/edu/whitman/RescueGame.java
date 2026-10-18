@@ -17,11 +17,18 @@ public class RescueGame {
     private MissionStatus status = MissionStatus.IN_PROGRESS;
 
     public RescueGame(RescueTeam team) {
-    if (team == null) {
-        throw new IllegalArgumentException("Team must not be null");
-    }
+        this(team, createDefaultTerrain(), DEFAULT_TURN_LIMIT);
 
-    throw new UnsupportedOperationException("TODO implement default mission");
+        new Scout(team, this.getTile(5, 0));
+        new Medic(team, this.getTile(5, 1));
+        new RescueTruck(team, this.getTile(5, 3));
+        new CommandUnit(team, this.getTile(5, 4));
+
+        new Survivor("A", this.getTile(0,0));
+        new Survivor("B", this.getTile(0,4));
+        new Survivor("C", this.getTile(2,4));
+        new Survivor("D", this.getTile(3,0));
+
     }
     
     public RescueGame(RescueTeam team, Terrain[][] terrain, int turnLimit) {
@@ -125,6 +132,23 @@ public class RescueGame {
             }
         }
         survivors.add(survivor);
+    }
+
+    private static Terrain[][] createDefaultTerrain() {
+        Terrain P = Terrain.PLAIN;
+        Terrain W = Terrain.WATER;
+        Terrain R = Terrain.RUBBLE;
+        Terrain B = Terrain.BLOCKED;
+        Terrain H = Terrain.SHELTER;
+
+        return new Terrain[][] {
+            {P, P, P, P, P},
+            {P, W, W, P, R},
+            {R, W, B, P, P},
+            {P, P, B, P, P},
+            {P, P, P, P, P},
+            {P, P, H, P, P}
+        };
     }
 
 }
