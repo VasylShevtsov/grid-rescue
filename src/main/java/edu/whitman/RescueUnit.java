@@ -11,7 +11,32 @@ public abstract class RescueUnit {
     private int deliveredCount;
 
     protected RescueUnit(RescueTeam team, Tile tile) {
-        throw new UnsupportedOperationException("TODO implement RescueUnit");
+        if (team == null || team.getGame() == null) {
+            throw new IllegalArgumentException("Team can't be null and must belong to a game");
+        }
+        team.getGame().requiredSetupOpen(); //calling the team setup guard
+
+        if (tile == null) {
+            throw new IllegalArgumentException("tile can't be null");
+        }
+        if (team.getGame() != tile.getGame()) {
+            throw new IllegalStateException("Tile and team must belong to the same game");
+        }
+        if (team.getGame().getTile(tile.getRow(), tile.getCol()) != tile) {
+            throw new IllegalStateException("Tile must be exact object stored in the board");
+        }
+        if (tile.getUnit() != null) {
+            throw new IllegalArgumentException("Tile unit has already been assigned");
+        }
+        if (!canEnter(tile.getTerrain())) {
+            throw new IllegalArgumentException("Cannot enter tile");
+        }
+
+        this.team = team;
+        this.tile = tile;
+
+        team.registerUnit(this);
+        tile.setUnit(this);
     }
 
     public RescueTeam getTeam() {
