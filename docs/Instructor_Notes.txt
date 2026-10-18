@@ -1,0 +1,65 @@
+GRID RESCUE INSTRUCTOR REVIEW NOTES
+
+This package proposes a replacement project for individual completion. It is not
+an instructor-issued assignment until accepted. The student implementation has
+not been supplied; starter method bodies intentionally throw TODO exceptions.
+
+Preserved assessment framework
+Milestone 2 retains the 70% project/group and 30% individual components, the
+1-to-4 assessment scale, automated grade from 1-to-3, and the additional manual
+point for PR requirements and code quality. The test denominator remains 53.
+Milestone 3 retains implementation 50, README 10, presentation 15, technical
+interview 5, and CATME 20 points. README subpoints and original listed achievement
+benchmarks are preserved. No marks have been redistributed or waived.
+
+Fields the instructor must resolve before adoption
+- Milestone 2 due date and milestone 3 due/presentation dates.
+- GitHub repository destination and exact first-iteration PR requirements.
+- How the existing milestone 2 individual collaboration/CATME component (30%)
+  and milestone 3 CATME component (20 points) apply to this solo submission.
+  Teammate peer ratings cannot be reproduced by one person. This package does
+  not presume that self-review, a journal, or AI collaboration substitutes for them.
+- Which syllabus lateness and academic-practice policies apply to this makeup.
+
+These are unresolved policy fields, not changes to the supplied rubric. The
+technical project can be implemented and tested independently of those fields.
+
+Technical equivalence
+The original has a small Java object model, specialized piece behavior, shared
+state, inventory transfers, upgrades, exceptions, and a full-game scenario.
+Grid Rescue has a 6x5 fixed map, four specialized units, survivor location/cargo/
+rescued transitions, two automatic upgrades, shared action limits, and explicit
+success/failure conditions. Ten model classes (two abstract) plus two enums are
+specified. Eight JUnit suites contain 53 tests, matching the original distribution.
+The revised public API and test expectations are part of this replacement proposal.
+
+Workflow details
+Keep .github/workflows/ci.yml, tools/grade.py and the eight named grading suites
+under instructor control after acceptance. Their report names are specific to
+Grid Rescue. Do not use the original Shogi report paths for this project.
+
+The grading formula is unchanged. The revised parser fixes reporting defects:
+it counts successful test cases rather than treating errors or skips as passes,
+checks expected suite sizes, and receives the actual Maven build outcome.
+The workflow runs a clean build to prevent old reports earning credit. A partial
+grade is printed even when tests fail; the CI job is green only when all 53 pass.
+Malformed/missing suite reports earn zero credit for that suite. A build failure
+receives 1.00. The grade script checks report consistency, not test-file integrity;
+repository review/protection remains necessary, just as in the reference project.
+Additional student suites do not change the protected 53-test grade.
+
+Standard Maven src/main/java and src/test/java paths are used so tests are found
+without custom source-directory configuration. Java release 11 and JUnit 5.7.0
+match the reference environment. No coverage-percentage or style-tool gate was
+added to the rubric. Code quality remains a manual assessment.
+
+GitHub Actions usage was checked against the official action documentation:
+https://github.com/actions/checkout
+https://github.com/actions/setup-java
+The supplied workflow uses checkout v7 and setup-java v6 with Temurin Java 11.
+
+Reference material
+Adapted from the user-supplied Project milestone 2 and Project Milestone 3
+handouts and cs370-group-6 test/CI reference files. Original course navigation,
+grades, instructor comments and obsolete dates were not copied into the new
+assignment. The supplied originals were not modified.

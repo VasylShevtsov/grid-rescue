@@ -1,0 +1,37 @@
+GRID RESCUE ASSIGNMENT KIT
+
+This kit supplies the assignment and test scaffold for you to implement Grid
+Rescue. It does not include a finished model or interface.
+
+READING ORDER
+1. Game_Rules.pdf or Game_Rules.txt: complete rules, fixed map, starting positions,
+   legal actions, upgrades, failure handling and a verified 40-action winning route.
+2. Project_Milestone_2.pdf or .txt: implement the Java model and pass the 53 tests.
+3. UML_Class_Specification.txt: draw the UML from the complete class boxes,
+   signatures, relationships, visibility and multiplicities.
+4. Test_Plan.txt: 53 individual test descriptions, requirement coverage and the
+   distinction between automated model checks and final interface assessment.
+5. Project_Milestone_3.pdf or .txt: add the interface, architecture, README,
+   presentation and interview, with original grading weights retained.
+6. Instructor_Notes.txt: pending due dates, repository/PR policy and solo CATME
+   application; the proposal does not invent or redistribute these criteria.
+
+START IMPLEMENTING
+Open starter-project in your Java IDE. Its pom.xml, src/ and .github/ contents
+form the repository root. With Java 11 and Maven available, run mvn test from that
+directory. All 53 tests are discovered but initially fail because model methods
+are TODO scaffolds. Implement behaviors incrementally. See README.md for build
+and grading instructions. The tools/grade.py file is part of the CI mechanism.
+The same documents are included under starter-project/docs/ for portability.
+
+CONTENTS
+Three printable PDFs, editable Word documents (.docx), and text counterparts.
+Plain-text UML specification, test plan and instructor review notes.
+Java 11 Maven starter with ten class stubs, two enums, eight JUnit suites,
+shared test fixtures and GitHub Actions grading workflow.
+Verification_Report.txt and FILE_MANIFEST.sha256 document the package checks.
+
+ASSESSMENT
+The assignment preserves the original rubric weights. Your professor must still
+set the dates and specify the solo application of teammate/CATME review. No
+institutional repository, review outcome, grade or deadline is presumed.

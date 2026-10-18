@@ -1,0 +1,40 @@
+name: Grade Grid Rescue Java Code
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  clickHere:
+    name: Click here
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 11
+        uses: actions/setup-java@v6
+        with:
+          java-version: '11'
+          distribution: temurin
+          cache: maven
+
+      - name: Run Maven tests
+        id: maven
+        continue-on-error: true
+        run: mvn --batch-mode clean test -Dmaven.test.failure.ignore=true
+
+      - name: Generate grade based on test results
+        if: always()
+        env:
+          MAVEN_OUTCOME: ${{ steps.maven.outcome }}
+        run: python3 tools/grade.py --build-outcome "$MAVEN_OUTCOME" --require-all
+
+      - name: Show Grade
+        if: always()
+        run: |
+          cat grade.txt
+          cat grade.txt >> "$GITHUB_STEP_SUMMARY"

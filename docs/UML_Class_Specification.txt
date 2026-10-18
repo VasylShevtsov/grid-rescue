@@ -1,0 +1,278 @@
+GRID RESCUE — TEXT UML CLASS SPECIFICATION
+
+This is a complete drawing guide and API contract for the Milestone 2 model. Package: edu.whitman. Java version: 11. Import java.util.List where used. + means public, # protected, ~ package-private, and - private. Abstract classes and methods are explicitly identified. Constants are public static final. All other fields listed below are suggested private implementation fields, not additional mandatory public API.
+
+Draw ten class boxes and two enum boxes. Draw inheritance using a solid line with a hollow triangle pointing to the parent. Show composition with a filled diamond at the owner where specified. Use the exact method names, parameter types, return types, and visibility below. Read Game_Rules.txt for the behavior and validation attached to each operation.
+
+1. ENUM Terrain
+
+   PLAIN
+   RUBBLE
+   WATER
+   BLOCKED
+   SHELTER
+
+2. ENUM MissionStatus
+
+   IN_PROGRESS
+   WON
+   LOST
+
+3. CLASS RescueGame
+
+Required public constants:
+   + HEIGHT: int = 6 {static, final}
+   + WIDTH: int = 5 {static, final}
+   + DEFAULT_TURN_LIMIT: int = 80 {static, final}
+
+Suggested private attributes:
+   - team: RescueTeam {final}
+   - board: Tile[][] {final; 6 rows, 5 columns}
+   - survivors: List<Survivor>
+   - turnLimit: int {final}
+   - turnsUsed: int
+   - status: MissionStatus
+
+Required constructors and operations:
+   + RescueGame(team: RescueTeam)
+   + RescueGame(team: RescueTeam, terrain: Terrain[][], turnLimit: int)
+   + getTeam(): RescueTeam
+   + getTile(row: int, col: int): Tile
+   + getBoard(): Tile[][]
+   + getSurvivors(): List<Survivor>
+   + getTurnLimit(): int
+   + getTurnsUsed(): int
+   + getTurnsRemaining(): int
+   + getStatus(): MissionStatus
+
+Responsibilities: create and own canonical tiles; bind one team; create the default scenario or an empty custom board; register survivors; validate fixture setup; centralize the action counter and mission outcome. Registration, setup guards, canonical-tile checks, and action completion may use nonpublic helper methods.
+
+4. CLASS RescueTeam
+
+Suggested private attributes:
+   - name: String {final; trimmed, nonblank}
+   - game: RescueGame {null until binding}
+   - units: List<RescueUnit>
+   - rescuedSurvivors: List<Survivor>
+
+Required constructors and operations:
+   + RescueTeam(name: String)
+   + getName(): String
+   + getGame(): RescueGame
+   + getUnits(): List<RescueUnit>
+   + getRescuedSurvivors(): List<Survivor>
+   + getRescuedCount(): int
+
+Responsibilities: hold one team's stable identity and unit/rescued registries; bind to no more than one game. No public add/remove/bind methods are required or permitted as ways around validated constructors or actions.
+
+5. CLASS Tile
+
+Suggested private attributes:
+   - game: RescueGame {final}
+   - row: int {final}
+   - col: int {final}
+   - terrain: Terrain {final}
+   - unit: RescueUnit {nullable}
+   - survivor: Survivor {nullable; waiting survivor only}
+
+Required game-owned constructor:
+   ~ Tile(game: RescueGame, row: int, col: int, terrain: Terrain)
+
+Required public operations:
+   + getGame(): RescueGame
+   + getRow(): int
+   + getCol(): int
+   + getTerrain(): Terrain
+   + isShelter(): boolean
+   + getUnit(): RescueUnit
+   + getSurvivor(): Survivor
+
+Responsibilities: represent one immutable board location and its independent unit/waiting-survivor occupancy. The package-private constructor supports game ownership; it is not a public caller API. No public setters or public placement/removal operations are required. A counterfeit Tile is rejected as a move or placement destination even if its coordinates match.
+
+6. CLASS Survivor
+
+Suggested private attributes:
+   - id: String {final; trimmed, unique within game}
+   - game: RescueGame {final; internal membership reference}
+   - tile: Tile {nullable}
+   - carrier: RescueUnit {nullable}
+   - rescued: boolean
+
+Required constructor and operations:
+   + Survivor(id: String, tile: Tile)
+   + getId(): String
+   + getTile(): Tile
+   + getCarrier(): RescueUnit
+   + isRescued(): boolean
+
+Responsibilities: validate and register an initially waiting survivor during setup; preserve exactly one of the three lifecycle states. There is deliberately no public getGame() requirement for Survivor and no public state setter. Internal game membership must still be tracked or reliably derivable after tile/carrier become null.
+
+7. ABSTRACT CLASS RescueUnit
+
+Suggested private attributes:
+   - team: RescueTeam {final}
+   - tile: Tile {nonnull}
+   - cargo: List<Survivor>
+   - deliveredCount: int
+
+Required protected constructor:
+   # RescueUnit(team: RescueTeam, tile: Tile)
+
+Required concrete public operations:
+   + getTeam(): RescueTeam
+   + getTile(): Tile
+   + getCargo(): List<Survivor>
+   + getDeliveredCount(): int
+   + move(destination: Tile): void
+   + pickUp(survivor: Survivor): void
+   + deliver(): int
+
+Required abstract public operations:
+   + getCapacity(): int {abstract}
+   + canEnter(terrain: Terrain): boolean {abstract}
+   + getLegalMoves(): List<Tile> {abstract}
+
+Responsibilities: validate initial unit registration and maintain common movement/cargo/delivery invariants; coordinate successful actions with the game. The constructor is protected, not public. getCapacity, canEnter, and getLegalMoves are implemented by each concrete type. Common private/protected/package-private direction or delivery helpers are optional.
+
+8. ABSTRACT CLASS UpgradeableUnit EXTENDS RescueUnit
+
+Suggested private attributes:
+   - upgraded: boolean
+
+Required protected constructor:
+   # UpgradeableUnit(team: RescueTeam, tile: Tile)
+
+Required public operation:
+   + isUpgraded(): boolean
+
+Inherited abstract operations remain abstract until implemented by Scout or Medic. A protected hook after successful delivery is allowed but its name is not prescribed. Upgrade state becomes true automatically once this unit's delivered count reaches at least one. No public manual-upgrade operation is required; no public bypass may weaken the trigger.
+
+9. CLASS Scout EXTENDS UpgradeableUnit
+
+Required constructor:
+   + Scout(team: RescueTeam, tile: Tile)
+
+Required public overrides:
+   + getCapacity(): int {override}
+   + canEnter(terrain: Terrain): boolean {override}
+   + getLegalMoves(): List<Tile> {override}
+
+Capacity one; eight directions; PLAIN/SHELTER/RUBBLE initially, additionally WATER after upgrade. BLOCKED is always forbidden. Inherits isUpgraded and all common unit operations.
+
+10. CLASS Medic EXTENDS UpgradeableUnit
+
+Required constructor:
+   + Medic(team: RescueTeam, tile: Tile)
+
+Required public overrides:
+   + getCapacity(): int {override}
+   + canEnter(terrain: Terrain): boolean {override}
+   + getLegalMoves(): List<Tile> {override}
+
+Capacity one initially and two after upgrade; four directions; PLAIN/SHELTER only. Inherits isUpgraded and all common unit operations.
+
+11. CLASS RescueTruck EXTENDS RescueUnit
+
+Required constructor:
+   + RescueTruck(team: RescueTeam, tile: Tile)
+
+Required public overrides:
+   + getCapacity(): int {override}
+   + canEnter(terrain: Terrain): boolean {override}
+   + getLegalMoves(): List<Tile> {override}
+
+Capacity two; four directions; PLAIN/SHELTER only. It does not inherit UpgradeableUnit and does not expose the required isUpgraded operation.
+
+12. CLASS CommandUnit EXTENDS RescueUnit
+
+Required constructor:
+   + CommandUnit(team: RescueTeam, tile: Tile)
+
+Required public overrides:
+   + getCapacity(): int {override}
+   + canEnter(terrain: Terrain): boolean {override}
+   + getLegalMoves(): List<Tile> {override}
+
+Capacity zero; eight directions; PLAIN/SHELTER only. It does not inherit UpgradeableUnit. A command at a shelter is required for victory.
+
+13. INHERITANCE TO DRAW
+
+   UpgradeableUnit --|> RescueUnit
+   Scout           --|> UpgradeableUnit
+   Medic           --|> UpgradeableUnit
+   RescueTruck     --|> RescueUnit
+   CommandUnit     --|> RescueUnit
+
+All RescueUnit public concrete operations are inherited by its subclasses. Scout and Medic additionally inherit isUpgraded. Do not repeat inherited operations in each subclass box unless helpful for your diagram; show the three concrete overrides explicitly. Neither abstract class can be instantiated.
+
+14. ASSOCIATIONS, MULTIPLICITIES, AND OWNERSHIP
+
+A. RescueGame to Tile: composition, filled diamond at RescueGame.
+   At the game end: 1. At the tile end: 30.
+   Each game owns exactly 30 canonical tiles; each tile belongs to exactly one game. The board is always 6 by 5. Tiles are not transferred between games.
+
+B. RescueGame to RescueTeam: one-to-one association after game construction.
+   At the game end from a team: 0..1, because a newly created team is unbound.
+   At the team end from a game: 1.
+   Team is constructed separately, so ordinary association is sufficient. Binding is permanent; one team cannot be reused for another game.
+
+C. RescueTeam to RescueUnit: ownership association (aggregation optional).
+   At the team end: 1. At the unit end: 0..*.
+   Each unit belongs to exactly one team; a custom empty team has zero units. The default has exactly one Scout, one Medic, one RescueTruck, and one CommandUnit. Custom fixtures can contain several units of a type.
+
+D. RescueUnit to Tile: association labeled current position.
+   At the tile end from a unit: 1.
+   At the unit end from a tile: 0..1.
+   Unit positions are never null, including terminal states. Tile.getUnit() and unit.getTile() agree.
+
+E. RescueGame to Survivor: ownership/registry association.
+   At the game end: 1. At the survivor end: 0..*.
+   The default registry has four survivors; a custom fixture may have zero or more. Registry membership persists through pickup and delivery. Suggested internal Survivor.game does not require a public getter.
+
+F. Tile to Survivor: association labeled waiting survivor.
+   At either end: 0..1.
+   A tile may have no waiting survivor; a carried/rescued survivor has no tile. This association is independent of unit occupancy, so a tile may hold a unit and a survivor simultaneously.
+
+G. RescueUnit to Survivor: association labeled cargo/carrier.
+   At the unit end from a survivor: 0..1.
+   At the survivor end from a unit: 0..* with constraint {cargo.size <= getCapacity()}.
+   The structural upper bound varies by subtype/current upgrade: Scout 1, Medic 1 or 2, Truck 2, Command 0. Show the constraint rather than treating every unit as fixed capacity two.
+
+H. RescueTeam to Survivor: association labeled rescued survivors.
+   At the team end from a rescued survivor: 1; from any survivor generally: 0..1.
+   At the survivor end from a team: 0..*.
+   This is a subset of the game's survivor registry, not a second ownership transfer. A survivor appears here exactly when isRescued is true.
+
+I. Tile uses Terrain; RescueGame uses MissionStatus.
+   These may be shown as typed attributes rather than separate association lines.
+
+15. LIFECYCLE AND CONSTRAINT NOTES FOR THE DIAGRAM
+
+Survivor states:
+   WAITING -> CARRIED -> RESCUED
+   WAITING: tile != null, carrier == null, rescued == false.
+   CARRIED: tile == null, carrier != null, rescued == false.
+   RESCUED: tile == null, carrier == null, rescued == true.
+   No reverse transition, cargo transfer, or deletion from game registry exists.
+
+Mission states:
+   IN_PROGRESS -> WON or LOST, after a successful action only.
+   WON and LOST are terminal. Construction alone never evaluates the win condition.
+   Win is checked before loss so the last permitted action can win.
+
+Setup lifecycle:
+   Unbound team -> bound game at turnsUsed 0 -> play after first successful action.
+   Unit/survivor construction is allowed only during setup.
+   A failed constructor must not bind/register/occupy anything.
+   Restart creates a new team/game; no reset/bind-again method is exposed.
+
+Collection constraints:
+   All public List returns are defensive snapshots, including cargo and legal moves.
+   Unit/survivor registries preserve construction/registration order.
+   Cargo preserves pickup order; rescued survivors preserve delivery order and
+   pickup order within each batch. Legal-move ordering is unrestricted.
+   getBoard copies its outer array and every row but contains canonical Tile objects.
+   Mutating query containers never changes model state.
+   All move/placement targets must be canonical tiles in the correct game.
+
+All mutating actions must validate before changing state. All successful move/pickUp/deliver calls cost one action. All rejected operations preserve every observable state value. Constructor/setup operations cost zero. No model operation performs console, UI, file, or network I/O.

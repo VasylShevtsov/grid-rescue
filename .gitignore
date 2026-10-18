@@ -1,0 +1,9 @@
+target/
+grade.txt
+grade.json
+.DS_Store
+.idea/
+*.iml
+.vscode/
+__pycache__/
+*.pyc

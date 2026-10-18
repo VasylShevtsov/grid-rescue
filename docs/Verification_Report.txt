@@ -1,0 +1,59 @@
+GRID RESCUE PACKAGE VERIFICATION
+
+Purpose
+Verify that this is a consistent assignment kit, not a completed student solution.
+
+Documents
+Game rules: 6 pages. Project Milestone 2: 5 pages. Project Milestone 3: 5 pages.
+Every page was rendered and visually inspected. Page bounds were checked and
+all source body blocks were confirmed present in the PDFs. Editable text copies
+and the complete plain-text UML specification are supplied.
+
+Test contract
+Eight suites contain exactly 53 JUnit @Test methods, with 53 unique T01-T53 IDs and
+53 matching individual test-plan entries. Suite sizes are 10, 8, 8, 5, 7, 8, 3, 4 for
+Game, Team, Tile, Unit, Scout, Medic, Truck, Command respectively. No tests are skipped.
+An independent review compared the tests to the rules and UML with no unresolved
+behavior/API contradiction.
+
+Reference verification
+A separate verification-only implementation passed all 53 tests in a clean Maven
+build, with zero failures/errors/skips. The delivered grader produced 3.00/3.00.
+That implementation is NOT included in the assignment kit. Additional private
+checks covered 148 conditions, including the published 40-action mission route,
+victory at limit 40, and loss at limit 39. The supplied longer integration test
+also completes the default mission in 46 actions and exercises both upgrades.
+
+Student scaffold verification
+The delivered TODO source stubs and test sources compile. Maven discovers all 53
+tests, which intentionally fail with the unimplemented model. The delivered
+grader reports 1.00/3.00 for this initial state. Enum declarations are supplied.
+This is the expected starting point, not a passing student submission.
+
+Grading mechanism
+Twelve targeted grader checks passed: all-pass, failure, error, skip, missing
+report, missing/extra cases, malformed XML, inconsistent counts, duplicate cases,
+build failure and absent reports. Formula: 1 + 2 * passed / 53. The manual PR/code-quality
+point and original milestone weights remain unchanged. Workflow YAML and official
+GitHub Actions setup guidance were reviewed. No hosted GitHub Actions run was
+performed because this kit has not been uploaded to a repository.
+
+Environment
+Local validation used OpenJDK 27 with javac/Maven --release 11, which restricts
+compiled code to Java 11 language and API compatibility. A Java 11 runtime is not
+installed on this computer; a separate Java 11 runtime execution was not performed.
+The supplied GitHub Actions workflow selects Temurin Java 11. First-time Maven
+builds need internet access to download dependencies.
+
+Package boundaries
+No private reference implementation, compiled classes, Maven target directory,
+Python cache, old grades, account files or original Shogi files are included.
+Instructor dates, first-iteration PR policy and solo CATME application remain
+explicitly pending. This report makes no claim of instructor approval or a final
+student grade.
+
+Editable Word versions
+All three handouts also have native editable .docx versions. Each was rendered
+and every page visually checked. The rules, rubric, technical paths and method
+names were checked against the text sources; no document editing protection or
+page images are present. Word copies are also included under starter-project/docs/.

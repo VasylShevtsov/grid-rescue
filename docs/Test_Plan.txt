@@ -1,0 +1,242 @@
+GRID RESCUE — MILESTONE 2 TEST PLAN
+Version 1.0 | Instructor review package
+
+Purpose
+The test package specifies the model behavior students implement in Milestone 2.
+It is a replacement suite for this proposed assignment, not a finished solution
+and not an assertion that the instructor has accepted the replacement project.
+The supplied starter intentionally leaves the model unimplemented. Behavioral
+failures are expected until the student completes it. Milestone 3 interface,
+README, presentation, interview, and collaboration grading remain separate.
+
+Location and execution
+  starter-project/src/test/java/edu/whitman/
+  Run from starter-project: mvn test
+  Requires Java 11 or a compatible newer JDK and Maven. The Maven configuration
+  targets Java 11 and supplies JUnit 5. Reports appear in target/surefire-reports/.
+  The corresponding workflow is starter-project/.github/workflows/ci.yml.
+  Run tests locally without editing their expectations to fit an implementation.
+
+Counting and grading
+Exactly 53 ordinary @Test methods are distributed across the eight suites below.
+There are no parameterized, dynamic, repeated, disabled, or conditional tests.
+A method with multiple assertions still counts as one test. TestSupport.java is
+only test infrastructure and contributes zero graded test methods.
+
+  GameTest       T01–T10    10
+  TeamTest       T11–T18     8
+  TileTest       T19–T26     8
+  UnitTest       T27–T31     5
+  ScoutTest      T32–T38     7
+  MedicTest      T39–T46     8
+  TruckTest      T47–T49     3
+  CommandTest    T50–T53     4
+  TOTAL                    53
+
+Automated Milestone 2 grade = 1 + 2 * passedTests / 53, a score from 1 to 3.
+A score of 3 here is only the automated portion. The separate fourth-point PR
+and code-quality expectations and the original individual/collaboration
+criteria remain in the milestone documents. The grader must reject malformed,
+missing, duplicated, skipped, failing, or erroring test results as a clean full
+pass; a skipped test is not a passed test. The accepted tests and workflow are
+instructor-controlled grading artifacts.
+
+Conventions and test infrastructure
+Every test constructs its own fixture. There is no global mutable test state,
+randomness, clock dependence, UI dependence, persistence, or test-order
+requirement. Custom fixtures begin with an empty canonical 6-by-5 map. Test
+constructors register all needed units and survivors before the first successful
+action. Paths are explicit; no pathfinding algorithm is required of the model.
+
+TestSupport.assertMoves compares exact sets of canonical Tile objects, checks
+for duplicates, and intentionally ignores ordering. A survivor does not block a
+legal destination. Terrain checks examine the destination alone; diagonal
+corner cutting is permitted for Scout and CommandUnit.
+
+TestSupport.assertFailsNoChange records game counters/status, team binding,
+registries, every tile occupant and waiting survivor, every unit position/cargo/
+delivery count/capacity/upgrade state, and every survivor location/carrier/status.
+It then checks the exception type and compares the complete observed snapshot.
+Exception text is not graded. Defensive list snapshots may be modifiable copies
+or immutable copies; attempted mutation must never affect the model. Snapshot
+contents must not change as the model subsequently changes. Board queries must
+copy both array levels while retaining the canonical Tile objects.
+
+Individual cases
+
+GameTest — setup, shared budget, terminal evaluation, and integration
+T01  Default mission: exact terrain matrix, one of each unit at its specified
+     coordinate, A/B/C/D at their specified coordinates, owner/team binding,
+     constants, 80 remaining turns, zero used turns, IN_PROGRESS status.
+T02  Custom mission: empty registries and occupancy, configurable limit, zero
+     setup cost, and defensive copying of terrain cells and row arrays.
+T03  Invalid game construction: null team/terrain, wrong dimensions, ragged or
+     null rows, null entries, no shelter, nonpositive limits. Rejected creation
+     must not bind the team; a valid construction can still bind it afterward.
+T04  Board ownership: independent outer/row arrays with canonical Tile identity;
+     caller array edits cannot affect the map. Out-of-bounds getTile queries
+     throw IllegalArgumentException without changing state.
+T05  One shared action budget: one unit can act repeatedly, another can then
+     act, each successful action counts once, and the last budgeted action
+     causes LOST if the win condition is absent. Remaining turns never go below 0.
+T06  Last-action delivery: pickup then delivery at a limit of 2 wins rather than
+     loses. Cargo rescue and Medic's automatic upgrade finish before WON.
+T07  All survivors rescued does not alone win; a CommandUnit's final permitted
+     move onto a shelter completes the win condition and takes precedence over loss.
+T08  Both WON and LOST freeze actions and setup. move(null), pickUp(null), and
+     empty deliver throw IllegalStateException before argument validation;
+     getLegalMoves is empty, state is unchanged, and read-only queries still work.
+T09  Successful actions lock setup; invalid actions do not. New units/survivors
+     cannot be constructed after play begins. Setup itself costs zero actions.
+T10  Full default mission: 46 explicit successful actions, Medic's first rescue,
+     Scout's rubble route and later water access, Truck's two-person batch,
+     complete rescued registry, and CommandUnit's move to the shelter to win.
+
+TeamTest — identity, ownership, registries, and construction
+T11  Team names are trimmed; null/empty/whitespace-only names are rejected.
+T12  A new team is unbound with empty unit/rescue registries. Binding one team
+     does not change a different team.
+T13  Each concrete unit registers once with its team and tile at zero turn cost,
+     with empty cargo and zero personal deliveries.
+T14  Unit and all-survivor registry queries are defensive snapshots: later setup
+     registrations do not alter old lists, and caller edits do not alter registries.
+T15  Delivering a two-person batch appends both survivors to the rescued registry
+     in cargo order. Rescue count, all-survivor retention, and old/new rescued
+     snapshots remain consistent.
+T16  Every concrete constructor rejects null team/tile, unbound team, foreign or
+     counterfeit tile, occupancy, BLOCKED, and WATER. Medic/Truck/Command also
+     reject RUBBLE; Scout can start on it. Failures leave registries/tiles intact.
+T17  Neither default nor custom game constructor may reuse a bound team; its
+     original game and its existing registrations stay unchanged.
+T18  Custom games allow repeated concrete types and multiple CommandUnits. Any
+     one command standing at any shelter can satisfy the command win condition.
+
+TileTest — canonical map cells and survivor lifecycle
+T19  Every tile exposes its canonical coordinate, terrain, and owning game.
+T20  isShelter exactly matches terrain. Even placing a CommandUnit at a shelter
+     during setup does not evaluate mission success or cost an action.
+T21  Unit occupancy and waiting-survivor occupancy are independent. Moving onto
+     and away from a survivor leaves that survivor waiting; no automatic pickup.
+T22  Survivor IDs are trimmed. Waiting survivors may start on PLAIN, RUBBLE,
+     WATER, or SHELTER and register at zero cost.
+T23  Null/blank IDs and null/counterfeit/invalid-coordinate tiles are rejected
+     without survivor registration or tile occupation.
+T24  Trimmed IDs are unique throughout a game, not just on one tile. A rejected
+     creation must not reserve its proposed ID. Different games may reuse IDs.
+T25  A second waiting survivor and BLOCKED terrain reject survivor placement.
+     A unit sharing the tile does not consume the independent survivor slot.
+T26  Waiting -> carried -> rescued transitions preserve exclusive location:
+     pickup clears the waiting slot, movement carries cargo, and delivery clears
+     carrier/cargo/map presence while retaining registration.
+
+UnitTest — common contract and architecture
+T27  Null, foreign, counterfeit, same-tile, too-distant, impassable, and occupied
+     move attempts are rejected atomically; a subsequent valid move still works.
+T28  Null/foreign/wrong-tile/full-capacity/carried/rescued pickup attempts are
+     rejected atomically. Cargo cannot transfer between units. Rescued survivors
+     stay registered and post-start construction cannot reuse their IDs.
+T29  Empty or off-shelter delivery is rejected atomically. Successful delivery
+     rescues all cargo in one action, returns batch size, increments personal
+     deliveries by that size, and cannot be repeated with empty cargo.
+T30  Cargo snapshots stay independent through further pickup and delivery.
+     Personal delivery counts and upgrades do not change on uninvolved units.
+T31  RescueUnit and UpgradeableUnit are abstract; Scout/Medic inherit through
+     UpgradeableUnit, Truck/Command directly from RescueUnit. Queries cost no
+     actions; all concrete canEnter(null) queries throw IllegalArgumentException.
+     Legal-move lists are fresh defensive snapshots.
+
+ScoutTest — eight-direction movement and terrain upgrade
+T32  Exactly eight one-cell neighbors from an open center, repeated actions by
+     the same unit, and three neighbors from an open corner.
+T33  Board edges and unit occupancy filter legal moves; a waiting survivor does
+     not. Modifying a legal-move snapshot cannot change subsequent legal moves.
+T34  Before upgrade Scout permits PLAIN/SHELTER/RUBBLE and rejects WATER/BLOCKED;
+     entering rubble does not upgrade it or increase its capacity of 1.
+T35  Diagonal movement may pass between impassable corner tiles if the destination
+     is legal. Arrival on a survivor still does not pick them up automatically.
+T36  Scout's own first delivery permanently enables WATER, leaves capacity at 1,
+     and still excludes BLOCKED. A later water rescue preserves that upgrade.
+T37  Another unit's rescue does not upgrade Scout or increment Scout's deliveries.
+T38  Scout rejects a second carried survivor. Pickup and arrival at shelter do not
+     upgrade it; actual delivery does. A different waiting survivor at the shelter
+     is not silently delivered along with cargo.
+
+MedicTest — orthogonal movement and cargo upgrade
+T39  Exactly four orthogonal one-cell destinations; diagonals/long moves reject
+     atomically, while a legal move clears old unit occupancy.
+T40  Both before and after upgrade, Medic only enters PLAIN/SHELTER. RUBBLE,
+     WATER, and BLOCKED remain excluded from queries and movement.
+T41  Initial capacity is 1. Pickup/movement do not upgrade or count as delivery;
+     trying to collect a second survivor leaves both locations intact.
+T42  First personal delivery immediately and permanently raises capacity to 2.
+     Later movement does not reset it or count as more deliveries.
+T43  Upgraded Medic collects two, rejects a third atomically, then rescues both
+     in a single batch/action. Rescue order and personal delivered count remain exact.
+T44  Another unit's delivery leaves Medic unupgraded at capacity 1.
+T45  Edge/occupancy filtering and legal-move snapshot independence. A survivor
+     permits movement onto its tile and stays waiting on arrival.
+T46  Invalid interactions and shelter arrival do not upgrade Medic, spend extra
+     actions, or increment rescue counts. Empty delivery after upgrade is invalid.
+
+TruckTest — fixed two-person cargo
+T47  Capacity 2 with only orthogonal PLAIN/SHELTER destinations. Forbidden terrain,
+     diagonals, and long moves reject without changing state.
+T48  Two survivors remain cargo until the whole batch reaches shelter. Off-shelter
+     delivery cannot partially rescue; valid two-person delivery costs one action.
+T49  A third pickup rejects atomically. After delivery the Truck still has capacity
+     2, can collect another survivor, and retains its accurate personal count.
+
+CommandTest — command-only role and mission gating
+T50  Eight-neighbor movement on PLAIN/SHELTER, capacity 0, no pickup or delivery.
+     RUBBLE/WATER/BLOCKED are not legal destinations.
+T51  Legal diagonal corner cutting, occupied/same/distant destination rejection,
+     exact occupancy transfer, and no automatic pickup on survivor arrival.
+T52  A command at a shelter is insufficient while any survivor is waiting/carried;
+     rescuing the final registered survivor then wins.
+T53  Zero registered survivors can never win; budget expiration still loses.
+     With multiple commands, one at a shelter is sufficient after all rescues.
+
+Cross-cutting coverage index
+  Default scenario and constants                     T01, T10
+  Custom setup/validation/binding                    T02–T04, T09, T11–T25
+  Map copying and all defensive list APIs            T04, T14–T15, T30–T33, T45
+  Canonical destinations / foreign/counterfeit tiles T04, T16, T19, T23, T27, T31–T33
+  All movement, terrain, bounds, corners, occupancy   T10, T16, T21, T27, T32–T40, T45, T47, T50–T51
+  Pickup/capacity/lifecycle/no cargo transfers        T21–T30, T38, T41, T43, T48–T50
+  Batch delivery/personal counts/automatic upgrades  T06, T10, T15, T26, T29–T30, T34–T44, T46–T49
+  Shared action budget / invalid-action atomicity   T05–T10, T16–T17, T23–T29, T36, T39–T53
+  Success/loss/terminal precedence and freeze        T05–T10, T18, T20, T52–T53
+  Required inheritance / abstract classes           T31
+
+Lifecycle precedence clarification
+Setup constructors are forbidden after the first successful action, even while
+status is IN_PROGRESS. Therefore a duplicate-ID construction while the original
+survivor is already cargo or rescued fails with IllegalStateException because
+setup has ended; it cannot be used to manufacture a new registered survivor.
+The registry retains waiting, carried, and rescued survivors. During legal setup,
+duplicate trimmed IDs fail with IllegalArgumentException. A Survivor constructor
+infers its owning game from its canonical tile: a canonical tile from another
+game creates a survivor in that other game, while a counterfeit tile is invalid.
+
+A same-package test may attempt a counterfeit Tile through the package-private
+constructor. Rejecting that creation itself or rejecting use of the resulting
+noncanonical tile both satisfy the validation check. No public tile-construction
+API is required.
+
+The default integration scenario is deliberately explicit, not an optimal route:
+  01–10 Medic retrieves D, delivers it, upgrades, and clears the shelter.
+  11–22 Scout retrieves A via rubble and delivers it to upgrade.
+  23–25 Scout demonstrates water access and clears the shelter approach.
+  26–43 Truck retrieves C and B and delivers the pair in one batch.
+  44    Truck moves off the shelter.
+  45–46 CommandUnit moves to the shelter; all four survivors are rescued, so WON.
+
+Limits of this suite
+These 53 finite tests are acceptance evidence for the specified model cases;
+they do not prove correctness for every possible map or action sequence. Students
+may add separate supplemental tests without changing this accepted suite or its
+53-test grading denominator. Milestone 3 additionally requires manual testing of
+unit selection, map display, legal-move feedback, pickup/delivery controls,
+exception messages, upgrade indicators, turn/rescue counters, terminal-state
+behavior, and a fresh-game restart. UI appearance, code quality, pull requests,
+README, presentation, interview, and CATME retain the rubric's separate review.
