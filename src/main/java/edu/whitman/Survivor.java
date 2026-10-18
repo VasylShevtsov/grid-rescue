@@ -37,6 +37,7 @@ public class Survivor {
 
         this.game.registerSurvivor(this);
         this.tile.setSurvivor(this);
+        this.rescued = false;
     }
 
     public String getId() {
@@ -53,6 +54,11 @@ public class Survivor {
 
     public boolean isRescued() {
         return rescued;
+    }
+
+    void becomeCarriedBy(RescueUnit unit) {
+        this.tile = null;
+        this.carrier = unit;
     }
 
 }

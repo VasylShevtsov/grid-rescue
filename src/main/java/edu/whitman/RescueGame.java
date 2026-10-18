@@ -138,6 +138,15 @@ public class RescueGame {
         return false;
     }
 
+    boolean hasSurvivor(Survivor candidate) {
+        for (Survivor s : survivors) {
+            if (candidate == s) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // units may only be constructed before the first successful action and while
     // the mission is in progress
     void requiredSetupOpen() {

@@ -87,7 +87,35 @@ public abstract class RescueUnit {
     }
 
     public void pickUp(Survivor survivor) {
-        throw new UnsupportedOperationException("TODO implement required behavior");
+        RescueGame game = team.getGame();
+        game.requireInProgress();
+
+        if (survivor == null) {
+            throw new IllegalArgumentException("Survivor can't be null");
+        }
+        if (!game.hasSurvivor(survivor)) {
+            throw new IllegalArgumentException("Survivor isn't in this game");
+        }
+        if (survivor.isRescued()) {
+            throw new IllegalArgumentException("Survivor is already rescued");
+        }
+        if (survivor.getCarrier() != null) {
+            throw new IllegalArgumentException("Survivor is already being carried");
+        }
+        if (survivor.getTile() != this.tile) {
+            throw new IllegalArgumentException("Survivor must be on the same tile");
+        }
+        if (tile.getSurvivor() != survivor) {
+            throw new IllegalArgumentException("Survivor must be on the same tile");
+        }
+        if (cargo.size() >= getCapacity()) {
+            throw new IllegalArgumentException("There is not enough capacity in the unit");
+        }
+
+        this.cargo.add(survivor);
+        survivor.becomeCarriedBy(this);
+
+        game.completeAction();
     }
 
     public int deliver() {
